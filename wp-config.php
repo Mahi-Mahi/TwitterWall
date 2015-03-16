@@ -1,5 +1,11 @@
 <?php
 
+define('WP_POST_REVISIONS', false );
+define('EMPTY_TRASH_DAYS', 0 );
+
+define('WP_CACHE', true);
+
+
 
 // ===================================================
 // Load database info and local development parameters
