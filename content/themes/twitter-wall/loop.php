@@ -6,7 +6,8 @@ $banned_authors = get_posts(array(
 	'post_type'		=>	'banned_account',
 	'posts_type'	=>	-1
 ));
-$banned_authors = wp_list_pluck($banned_authors, 'post_title');
+if ( count($banned_authors) )
+	$banned_authors = wp_list_pluck($banned_authors, 'post_title');
 
 $words = get_posts(array(
 	'post_type'		=>	'banned_word',
@@ -15,8 +16,8 @@ $words = get_posts(array(
 $banned_words = array();
 foreach($words as $word)
 	$banned_words[] = addslashes($word->post_title);
-
-$banned_words = "#".implode("|", $banned_words)."#";
+if ( count($banned_words) )
+	$banned_words = "#".implode("|", $banned_words)."#";
 
 $posts = array();
 
@@ -47,10 +48,10 @@ while(have_posts()):
 	$author = get_the_meta('author');
 	$id_str = get_the_meta('origin_id');
 
-	if ( in_array($author, $banned_authors))
+	if ( ! empty($banned_authors) && in_array($author, $banned_authors))
 		continue;
 
-	if ( preg_match($banned_words, $content) )
+	if ( !empty($banned_words) && preg_match($banned_words, $content) )
 		continue;
 
 	if ( $do_offset && $offset-- > 0 )
