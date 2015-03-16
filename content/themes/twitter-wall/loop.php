@@ -1,4 +1,7 @@
 <?php
+
+twitterwall_get_posts();
+
 $banned_authors = get_posts(array(
 	'post_type'		=>	'banned_account',
 	'posts_type'	=>	-1

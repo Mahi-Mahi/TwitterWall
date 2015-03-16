@@ -61,7 +61,20 @@ function twitterwall_clean() {
 
 function twitterwall_get_posts() {
 
-	xmpr("twitterwall_get_posts");
+	logr("twitterwall_get_posts");
+
+	$expire = get_option('refresh_tweet_timeout');
+
+	logr("expire : ".date("Y-m-d H:i:s", $expire));
+
+	if ( $expire && $expire > strtotime("-10 seconds") ):
+		logr("slow down please");
+		return;
+	endif;
+
+	logr("do refresh tweets");
+
+	update_option('refresh_tweet_timeout', time());
 
 	$hashtag = get_field('hashtag', 'option');
 
@@ -84,7 +97,7 @@ function twitterwall_get_posts() {
 
 	$url = 'q='.urlencode($hashtag).'&lang=fr&result_type=recent&count=100';
 
-	xmpr($url);
+	// xmpr($url);
 	$response = $cb->search_tweets($url, true);
 
 	// $response = $cb->statuses_userTimeline('screen_name=MazarsFrance');
