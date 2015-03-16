@@ -1,0 +1,20 @@
+Index: frontend/class-opengraph.php
+===================================================================
+--- frontend/class-opengraph.php	(revision 557291)
++++ frontend/class-opengraph.php	(working copy)
+@@ -18,7 +18,7 @@
+ 		
+ 		wp_reset_query();
+ 		
+-		$this->locale();
++//		$this->locale();
+ 		$this->id();
+ 		$this->title();
+ 		$this->description();
+@@ -281,4 +281,4 @@
+ 	}
+ }
+ 
+-$wpseo_og = new WPSEO_OpenGraph;
+\ No newline at end of file
++$wpseo_og = new WPSEO_OpenGraph;

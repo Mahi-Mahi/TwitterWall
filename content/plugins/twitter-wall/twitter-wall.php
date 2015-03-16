@@ -9,6 +9,15 @@ define('TWITTERWALL_URL', WP_PLUGIN_URL.'/twitter-wall');
 
 
 
+function twitterwall_cli_init() {
+	if ( defined('WP_CLI') && WP_CLI ):
+		require_once(TWITTERWALL_DIR.'/wp-cli.php');
+	endif;
+}
+add_action( 'plugins_loaded', 'twitterwall_cli_init' );
+
+
+
 
 function twitterwall_clean() {
 	query_posts(array('post_type' => 'post', 'posts_per_page' => -1));
@@ -23,9 +32,6 @@ function twitterwall_clean() {
 function twitterwall_get_posts() {
 
 	xmpr("mazars_get_tweets");
-
-	$social_type = mahi_get_or_create_term('social-type', 'twitter');
-
 
 	require_once( TWITTERWALL_DIR . '/lib/codebird/codebird.php');
 	\Codebird\Codebird::setConsumerKey(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET); // static, see 'Using multiple Codebird instances'
@@ -42,9 +48,9 @@ function twitterwall_get_posts() {
 	endif;
 
 	$url = 'result_type=recent&entities=true&since_id=' . $last_id_str;
+	$response = $cb->search_tweets($url, true);
 
-	// $response = $cb->search_tweets($url, true);
-	$response = $cb->statuses_userTimeline('screen_name=MazarsFrance');
+	// $response = $cb->statuses_userTimeline('screen_name=MazarsFrance');
 
 	// xmpr($response);
 
@@ -80,14 +86,11 @@ function twitterwall_get_posts() {
 
 			$post_id = wp_insert_post($data);
 
-
 			if ( is_wp_error($post_id) ):
 
 				xmpr($post_id);
 
 			else:
-
-				wp_set_object_terms($post_id, $social_type->term_id, 'social-type', true);
 
 				if ( $metas['image_url'] ):
 					$metas['image_id'] = mahibasics_media_sideload_image($metas['image_url'], $post_id, $data['post_title']);

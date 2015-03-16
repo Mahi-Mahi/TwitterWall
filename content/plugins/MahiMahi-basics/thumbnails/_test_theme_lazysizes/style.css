@@ -1,0 +1,53 @@
+/*
+Theme Name: LazySizes Test
+*/
+
+
+main {
+	width: 960px;
+	border: 1px red solid;
+}
+article {
+	width: 80%;
+	border: 1px green solid;
+}
+.related li {
+	width: 30%;
+	display: inline-block;
+}
+@media (max-width: 960px) {
+	main {
+		width: 800px;
+	}
+}
+@media (max-width: 800px) {
+	main {
+		width: 600px;
+	}
+}
+@media (min-width: 1200px) {
+	main {
+		width: 1200px;
+	}
+}
+
+@media (min-width: 1400px) {
+	main {
+		width: 1400px;
+	}
+}
+
+.img_container,
+img {
+	width: 100%;
+	height: auto;
+}
+
+
+
+xmp {
+	white-space: normal;
+	word-wrap: break-word;
+  	hyphens: auto;
+}
+

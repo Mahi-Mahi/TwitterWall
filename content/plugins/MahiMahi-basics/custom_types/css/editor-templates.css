@@ -1,0 +1,21 @@
+/* Editor templates */
+.tools {
+	position:absolute;
+	display:block;
+	top:0;
+	cursor:pointer;
+	height: 20px;
+	width:20px;
+}
+.remove {
+	background-image: url('/wp-content/plugins/MahiMahi-basics/custom_types/images/delete.png');
+	left:0;
+}
+.up {
+	background-image: url('/wp-content/plugins/MahiMahi-basics/custom_types/images/up.png');
+	left:20px;
+}
+.down {
+	background-image: url('/wp-content/plugins/MahiMahi-basics/custom_types/images/down.png');
+	left:40px;
+}

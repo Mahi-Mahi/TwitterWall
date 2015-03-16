@@ -1,0 +1,18 @@
+
+.tablenav .actions {
+	overflow: visible;
+}
+.tablenav .actions select {
+	float: none;
+	display: inline-block;
+}
+.tablenav .chzn-container {
+}
+
+.tablenav .actions select[name="seo_filter"] {
+	display: none;
+}
+
+.select2-container.bigdrop { 
+	margin-right: 10px;
+}

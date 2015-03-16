@@ -1,0 +1,31 @@
+@import url("/wp-admin/css/colors-fresh.css");
+@import url("/wp/wp-admin/css/colors-fresh.css");
+
+#wphead {
+	border-bottom:#b0c8d7 1px solid;
+	background: #00FF00; /* fallback color */
+	background:-moz-linear-gradient(bottom,  #aaffaa,  #ddffdd);
+	background:-webkit-gradient(linear, left bottom, left top, from(#aaffaa), to(#ddffdd));
+}
+
+#wphead h1 a {
+	color: #174f69;
+}
+
+#wpadminbar {
+	background-color: #226611; /* Fallback */
+	background-image: -ms-linear-gradient(bottom, #226611, #373737 50px); /* IE10 */
+	background-image: -moz-linear-gradient(bottom, #226611, #373737 50px); /* Firefox */
+	background-image: -o-linear-gradient(bottom, #226611, #373737); /* Opera */
+	background-image: -webkit-gradient(linear, left bottom, left top, from(#226611), to(#373737)); /* old Webkit */
+	background-image: -webkit-linear-gradient(bottom, #373737, #226611 50px); /* new Webkit */
+	background-image: linear-gradient(bottom, #226611, #373737); /* proposed W3C Markup */
+}
+
+
+body.edit-tags-php td.column-description {
+	height: 90px;
+	overflow: hidden;
+	display: block;
+}
+

@@ -1,0 +1,118 @@
+.imageTitle { padding:0 0 0 .5em; }
+.descriptionImage { padding:10px;}
+.image_select { padding:0 1em; }
+
+.image_select strong, .image_select a { display:block; float:left; height:100px; line-height:100px; font-size:12px; font-weight:normal; padding:0 .5em; }
+.image_select a { display:none; line-height:1; position:absolute; top:50%; right:0; }
+
+.image_select li { border:1px solid #dfdfdf; border-bottom:none; display:block; padding:.5em; position:relative; margin:0; zoom:1; }
+.image_select li:before, .image_select li:after { content: ""; display: table; }
+.image_select li:after { clear: both; }
+.image_select li:last-child { border-bottom:1px solid #dfdfdf; }
+.image_select li:hover { background:#f1f1f1; cursor:pointer; }
+.image_select li:hover a { display:block; }
+.image_select li.selected{background-color:rgba(255,116,0,0.4);}
+.image_select li.selected:hover{background-color:rgba(255,0,0,0.5);}
+.image_select img { float:left; height:100px; width:100px; }
+
+.search_field { width:500px; }
+
+input.text { width:100%; }
+
+textarea.code { width:100%; }
+
+.postbox .custom-type label { display: none; }
+.postbox .custom-type .checkboxes label { display: inline; }
+.postbox .custom-type .editor_style label { display: inline; }
+.postbox .custom-type .editor_template label { display: inline; }
+
+.autocomplete ul li { cursor: move; }
+
+.post_reference ul { overflow: auto; max-height: 300px;	}
+
+
+.favorite-actions {
+		float: right;
+		min-width: 130px;
+		position: relative;
+}
+.favorite-first {
+		-moz-border-radius: 12px 12px 12px 12px;
+		border-style: solid;
+		border-width: 1px;
+		line-height: 15px;
+		padding: 3px 30px 4px 12px;
+}
+.favorite-inside {
+		-moz-border-radius: 0 0 12px 12px;
+		border-style: solid;
+		border-width: 1px;
+		display: none;
+		margin: 0;
+		padding: 2px 1px;
+		position: absolute;
+		z-index: 11;
+}
+.favorite-actions a {
+		display: block;
+		font-size: 11px;
+		text-decoration: none;
+}
+.favorite-inside a {
+		padding: 3px 5px 3px 10px;
+}
+.favorite-toggle {
+		height: 22px;
+		position: absolute;
+		right: 0;
+		top: 1px;
+		width: 28px;
+}
+.favorite-actions .slide-down {
+		-moz-border-radius: 12px 12px 0 0;
+		border-bottom: medium none;
+}
+
+.favorite-first {
+		background: -moz-linear-gradient(center bottom , #E7E7E7, #FFFFFF) repeat scroll 0 0 transparent;
+		border-color: #C0C0C0;
+}
+.favorite-inside {
+		background-color: #FFFFFF;
+		border-color: #C0C0C0;
+}
+.favorite-toggle {
+		background: url("../images/fav-arrow.gif?ver=20100531") no-repeat scroll 0 -4px transparent;
+}
+.favorite-actions a {
+		color: #464646;
+}
+.favorite-actions a:hover {
+		color: #000000;
+}
+.favorite-inside a:hover {
+		text-decoration: underline;
+}
+
+
+ul.suggest {
+	padding: 20px;
+	font-size: 14px;
+}
+ul.suggest li a {
+	margin-right: 20px;
+}
+
+/* AddressPicker */
+.custom_type.address .address {}
+.addresspicker_input {
+  width: 450px;
+}
+.custom-type.address .addresspicker_map {
+  width: 450px;
+  height: 300px;
+  border: 1px solid #DDD;
+  margin: 0px 0 0 10px;
+  -webkit-box-shadow: #AAA 0px 0px 15px;
+}
+
