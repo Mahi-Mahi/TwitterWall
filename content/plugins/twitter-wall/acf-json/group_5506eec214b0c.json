@@ -56,20 +56,6 @@
     "style": "default",
     "label_placement": "left",
     "instruction_placement": "label",
-    "hide_on_screen": [
-        "permalink",
-        "excerpt",
-        "discussion",
-        "comments",
-        "revisions",
-        "slug",
-        "author",
-        "format",
-        "page_attributes",
-        "featured_image",
-        "categories",
-        "tags",
-        "send-trackbacks"
-    ],
-    "modified": 1426528237
+    "hide_on_screen": "",
+    "modified": 1426528753
 }

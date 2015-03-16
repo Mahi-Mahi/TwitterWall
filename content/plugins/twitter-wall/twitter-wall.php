@@ -110,6 +110,9 @@ function twitterwall_get_posts() {
 
 			// xmpr($status);
 
+			if ( $status->retweeted_status )
+				continue;
+
 			// if ( preg_match("#RT#", $status->text) )
 			// 	continue;
 
