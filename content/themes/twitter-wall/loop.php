@@ -33,6 +33,8 @@ endif;
 
 $updates = 15;
 
+$nb_posts = 15;
+
 query_posts($args);
 while(have_posts()):
 
@@ -60,7 +62,6 @@ while(have_posts()):
 		?>
 		<li data-id="<?php print $id_str ?>">
 			<?php
-			xmpr($id_str);
 			print $embed;
 			?>
 		</li>
@@ -68,9 +69,11 @@ while(have_posts()):
 	endif;
 
 
-	if ( ! empty($_POST) && $updates-- )
+	if ( ! empty($_POST) && ! $updates-- )
 		break;
 
+	if ( ! $nb_posts-- )
+		break;
 
 endwhile;
 if ( !empty($_POST) ):
