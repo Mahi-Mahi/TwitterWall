@@ -44,11 +44,12 @@ html, body, .wrapper {
 
 .header {
 	background:image-url("banner.jpg") left top no-repeat;
-	background-size:cover;
+	background-size:contain;
 	display: block;
-	height: 500px;
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
+	width:1080px;
+	height: 360px;
 }
 
 .container {
@@ -85,10 +86,10 @@ html, body, .wrapper {
 		background:#fff;
 		display: block;
 		height: 200px;
-		margin: 0 5px -10px 0;
+		margin: 0 5px -80px 0;
 		padding: 0;
 		position:relative;
-		top:-20px;
+		top:-90px;
 		width: 200px;
 	}
 	p {

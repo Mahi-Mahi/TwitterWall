@@ -72,14 +72,15 @@ html, body, .wrapper {
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000345}}
 .header {
   background: url('/content/themes/twitter-wall/images/banner.jpg') left top no-repeat;
-  background-size: cover;
+  background-size: contain;
   display: block;
-  height: 500px;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
+  width: 1080px;
+  height: 360px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000354}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000355}}
 .container {
   display: block;
   margin: 0 auto;
@@ -87,7 +88,7 @@ html, body, .wrapper {
   width: 1080px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000361}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000362}}
 .main-work {
   display: table;
   margin: 0;
@@ -95,14 +96,14 @@ html, body, .wrapper {
   width: 100%;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000368}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000369}}
 .main {
   background: rgba(255, 255, 255, 0.5);
   display: block;
   width: 100%;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000374}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000375}}
 .sidebar, .content {
   display: table-cell;
   margin: 0;
@@ -110,23 +111,23 @@ html, body, .wrapper {
   vertical-align: top;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000381}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000382}}
 .sidebar {
   padding: 0 20px 0 20px;
   width: 290px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000384}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000385}}
 .sidebar img {
   background: #fff;
   display: block;
   height: 200px;
-  margin: 0 5px -10px 0;
+  margin: 0 5px -80px 0;
   padding: 0;
   position: relative;
-  top: -20px;
+  top: -90px;
   width: 200px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000394}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000395}}
 .sidebar p {
   display: block;
   line-height: 20px;
@@ -134,14 +135,14 @@ html, body, .wrapper {
   padding: 10px 0 0 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\00003102}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\00003103}}
 h1 {
   display: block;
   font: 700 22px/1 '"Helvetica Neue",Helvetica,Arial,sans-serif', sans-serif;
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\00003107}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\00003108}}
 h1 span {
   color: #8899a6;
   display: block;
