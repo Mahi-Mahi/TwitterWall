@@ -174,7 +174,10 @@ if ( $action ) {
 					<?php wp_nonce_field('bulk-themes') ?>
 					<?php submit_button( _n( 'Yes, Delete this theme', 'Yes, Delete these themes', $themes_to_delete ), 'button', 'submit', false ); ?>
 				</form>
-				<form method="post" action="<?php echo esc_url(wp_get_referer()); ?>" style="display:inline;">
+				<?php
+				$referer = wp_get_referer();
+				?>
+				<form method="post" action="<?php echo $referer ? esc_url( $referer ) : ''; ?>" style="display:inline;">
 					<?php submit_button( __( 'No, Return me to the theme list' ), 'button', 'submit', false ); ?>
 				</form>
 
@@ -217,7 +220,7 @@ $wp_list_table->prepare_items();
 
 add_thickbox();
 
-add_screen_option( 'per_page', array('label' => _x( 'Themes', 'themes per page (screen options)' )) );
+add_screen_option( 'per_page' );
 
 get_current_screen()->add_help_tab( array(
 	'id'      => 'overview',
@@ -267,7 +270,7 @@ if ( isset( $_GET['enabled'] ) ) {
 
 ?>
 
-<form method="get" action="">
+<form method="get">
 <?php $wp_list_table->search_box( __( 'Search Installed Themes' ), 'theme' ); ?>
 </form>
 
@@ -278,7 +281,7 @@ if ( 'broken' == $status )
 	echo '<p class="clear">' . __('The following themes are installed but incomplete. Themes must have a stylesheet and a template.') . '</p>';
 ?>
 
-<form method="post" action="">
+<form method="post">
 <input type="hidden" name="theme_status" value="<?php echo esc_attr($status) ?>" />
 <input type="hidden" name="paged" value="<?php echo esc_attr($page) ?>" />
 

@@ -10,6 +10,8 @@
 if ( !defined('ABSPATH') )
 	die('-1');
 
+global $post_type, $post_type_object, $post;
+
 wp_enqueue_script('post');
 $_wp_editor_expand = $_content_editor_dfw = false;
 
@@ -43,11 +45,16 @@ $post_ID = isset($post_ID) ? (int) $post_ID : 0;
 $user_ID = isset($user_ID) ? (int) $user_ID : 0;
 $action = isset($action) ? $action : '';
 
+if ( $post_ID == get_option( 'page_for_posts' ) && empty( $post->post_content ) ) {
+	add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
+	remove_post_type_support( $post_type, 'editor' );
+}
+
 $thumbnail_support = current_theme_supports( 'post-thumbnails', $post_type ) && post_type_supports( $post_type, 'thumbnail' );
 if ( ! $thumbnail_support && 'attachment' === $post_type && $post->post_mime_type ) {
-	if ( 0 === strpos( $post->post_mime_type, 'audio/' ) ) {
+	if ( wp_attachment_is( 'audio', $post ) ) {
 		$thumbnail_support = post_type_supports( 'attachment:audio', 'thumbnail' ) || current_theme_supports( 'post-thumbnails', 'attachment:audio' );
-	} elseif ( 0 === strpos( $post->post_mime_type, 'video/' ) ) {
+	} elseif ( wp_attachment_is( 'video', $post ) ) {
 		$thumbnail_support = post_type_supports( 'attachment:video', 'thumbnail' ) || current_theme_supports( 'post-thumbnails', 'attachment:video' );
 	}
 }
@@ -63,35 +70,40 @@ add_action( 'admin_footer', '_local_storage_notice' );
 /*
  * @todo Document the $messages array(s).
  */
+$permalink = get_permalink( $post_ID );
+if ( ! $permalink ) {
+	$permalink = '';
+}
+
 $messages = array();
 $messages['post'] = array(
 	 0 => '', // Unused. Messages start at index 1.
-	 1 => sprintf( __('Post updated. <a href="%s">View post</a>'), esc_url( get_permalink($post_ID) ) ),
+	 1 => sprintf( __('Post updated. <a href="%s">View post</a>'), esc_url( $permalink ) ),
 	 2 => __('Custom field updated.'),
 	 3 => __('Custom field deleted.'),
 	 4 => __('Post updated.'),
 	/* translators: %s: date and time of the revision */
 	 5 => isset($_GET['revision']) ? sprintf( __('Post restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-	 6 => sprintf( __('Post published. <a href="%s">View post</a>'), esc_url( get_permalink($post_ID) ) ),
+	 6 => sprintf( __('Post published. <a href="%s">View post</a>'), esc_url( $permalink ) ),
 	 7 => __('Post saved.'),
-	 8 => sprintf( __('Post submitted. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+	 8 => sprintf( __('Post submitted. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 	 9 => sprintf( __('Post scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview post</a>'),
 		/* translators: Publish box date format, see http://php.net/date */
-		date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-	10 => sprintf( __('Post draft updated. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+		date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+	10 => sprintf( __('Post draft updated. <a target="_blank" href="%s">Preview post</a>'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 );
 $messages['page'] = array(
 	 0 => '', // Unused. Messages start at index 1.
-	 1 => sprintf( __('Page updated. <a href="%s">View page</a>'), esc_url( get_permalink($post_ID) ) ),
+	 1 => sprintf( __('Page updated. <a href="%s">View page</a>'), esc_url( $permalink ) ),
 	 2 => __('Custom field updated.'),
 	 3 => __('Custom field deleted.'),
 	 4 => __('Page updated.'),
 	 5 => isset($_GET['revision']) ? sprintf( __('Page restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-	 6 => sprintf( __('Page published. <a href="%s">View page</a>'), esc_url( get_permalink($post_ID) ) ),
+	 6 => sprintf( __('Page published. <a href="%s">View page</a>'), esc_url( $permalink ) ),
 	 7 => __('Page saved.'),
-	 8 => sprintf( __('Page submitted. <a target="_blank" href="%s">Preview page</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-	 9 => sprintf( __('Page scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview page</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-	10 => sprintf( __('Page draft updated. <a target="_blank" href="%s">Preview page</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+	 8 => sprintf( __('Page submitted. <a target="_blank" href="%s">Preview page</a>'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+	 9 => sprintf( __('Page scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview page</a>'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+	10 => sprintf( __('Page draft updated. <a target="_blank" href="%s">Preview page</a>'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 );
 $messages['attachment'] = array_fill( 1, 10, __( 'Media attachment updated.' ) ); // Hack, for now.
 
@@ -166,7 +178,7 @@ if ( 'attachment' == $post_type ) {
 	add_meta_box( 'submitdiv', __('Save'), 'attachment_submit_meta_box', null, 'side', 'core' );
 	add_action( 'edit_form_after_title', 'edit_form_image_editor' );
 
-	if ( 0 === strpos( $post->post_mime_type, 'audio/' ) ) {
+	if ( wp_attachment_is( 'audio', $post ) ) {
 		add_meta_box( 'attachment-id3', __( 'Metadata' ), 'attachment_id3_data_meta_box', null, 'normal', 'core' );
 	}
 } else {
@@ -414,6 +426,8 @@ if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create
  * @param WP_Post $post Post object.
  */
 do_action( 'post_edit_form_tag', $post );
+
+$referer = wp_get_referer();
 ?>>
 <?php wp_nonce_field($nonce_action); ?>
 <input type="hidden" id="user-id" name="user_ID" value="<?php echo (int) $user_ID ?>" />
@@ -422,7 +436,7 @@ do_action( 'post_edit_form_tag', $post );
 <input type="hidden" id="post_author" name="post_author" value="<?php echo esc_attr( $post->post_author ); ?>" />
 <input type="hidden" id="post_type" name="post_type" value="<?php echo esc_attr( $post_type ) ?>" />
 <input type="hidden" id="original_post_status" name="original_post_status" value="<?php echo esc_attr( $post->post_status) ?>" />
-<input type="hidden" id="referredby" name="referredby" value="<?php echo esc_url(wp_get_referer()); ?>" />
+<input type="hidden" id="referredby" name="referredby" value="<?php echo $referer ? esc_url( $referer ) : ''; ?>" />
 <?php if ( ! empty( $active_post_lock ) ) { ?>
 <input type="hidden" id="active_post_lock" value="<?php echo esc_attr( implode( ':', $active_post_lock ) ); ?>" />
 <?php
@@ -483,7 +497,7 @@ do_action( 'edit_form_before_permalink', $post );
 <?php
 $sample_permalink_html = $post_type_object->public ? get_sample_permalink_html($post->ID) : '';
 $shortlink = wp_get_shortlink($post->ID, 'post');
-$permalink = get_permalink( $post->ID );
+
 if ( !empty( $shortlink ) && $shortlink !== $permalink && $permalink !== home_url('?page_id=' . $post->ID) )
     $sample_permalink_html .= '<input id="shortlink" type="hidden" value="' . esc_attr($shortlink) . '" /><a href="#" class="button button-small" onclick="prompt(&#39;URL:&#39;, jQuery(\'#shortlink\').val()); return false;">' . __('Get Shortlink') . '</a>';
 

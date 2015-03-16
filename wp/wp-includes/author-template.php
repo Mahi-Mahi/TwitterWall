@@ -197,7 +197,7 @@ function get_the_author_posts() {
 	if ( ! $post ) {
 		return 0;
 	}
-	return count_user_posts( $post->post_author );
+	return count_user_posts( $post->post_author, $post->post_type );
 }
 
 /**
@@ -337,7 +337,7 @@ function wp_list_authors( $args = '' ) {
 	$authors = get_users( $query_args );
 
 	$author_count = array();
-	foreach ( (array) $wpdb->get_results( "SELECT DISTINCT post_author, COUNT(ID) AS count FROM $wpdb->posts WHERE post_type = 'post' AND " . get_private_posts_cap_sql( 'post' ) . " GROUP BY post_author" ) as $row ) {
+	foreach ( (array) $wpdb->get_results( "SELECT DISTINCT post_author, COUNT(ID) AS count FROM $wpdb->posts WHERE " . get_private_posts_cap_sql( 'post' ) . " GROUP BY post_author" ) as $row ) {
 		$author_count[$row->post_author] = $row->count;
 	}
 	foreach ( $authors as $author_id ) {
@@ -451,4 +451,3 @@ function is_multi_author() {
 function __clear_multi_author_cache() {
 	delete_transient( 'is_multi_author' );
 }
-add_action('transition_post_status', '__clear_multi_author_cache');

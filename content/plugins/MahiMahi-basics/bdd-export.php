@@ -2,7 +2,7 @@
 /*
 Plugin Name: Bdd Export
 */
-require_once($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/wp/wp-load.php');
 
 if ( isset($_GET['bdd_export_key']) ):
 
@@ -10,7 +10,7 @@ if ( isset($_GET['bdd_export_key']) ):
 
 	if ( $_GET['bdd_export_key'] == get_option( 'bdd_export_key' )):
 
-		$dirname = $_SERVER['DOCUMENT_ROOT']."/wp-content/bdd-export/";
+		$dirname = $_SERVER['DOCUMENT_ROOT']."/content/bdd-export/";
 		@mkdir($dirname, 0777, true);
 		$cmd = "chmod 777 -R ".$dirname;
 		exec($cmd);

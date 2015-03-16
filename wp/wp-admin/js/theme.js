@@ -79,7 +79,8 @@ themes.view.Appearance = wp.Backbone.View.extend({
 
 		// Render and append
 		this.view.render();
-		this.$el.empty().append( this.view.el ).addClass('rendered');
+		this.$el.find( '.themes' ).remove();
+		this.$el.append( this.view.el ).addClass( 'rendered' );
 		this.$el.append( '<br class="clear"/>' );
 	},
 
@@ -165,7 +166,7 @@ themes.Collection = Backbone.Collection.extend({
 	// Performs a search within the collection
 	// @uses RegExp
 	search: function( term ) {
-		var match, results, haystack;
+		var match, results, haystack, name, description, author;
 
 		// Start with a full collection
 		this.reset( themes.data.themes, { silent: true } );
@@ -181,7 +182,11 @@ themes.Collection = Backbone.Collection.extend({
 		// Find results
 		// _.filter and .test
 		results = this.filter( function( data ) {
-			haystack = _.union( data.get( 'name' ), data.get( 'id' ), data.get( 'description' ), data.get( 'author' ), data.get( 'tags' ) );
+			name        = data.get( 'name' ).replace( /(<([^>]+)>)/ig, '' );
+			description = data.get( 'description' ).replace( /(<([^>]+)>)/ig, '' );
+			author      = data.get( 'author' ).replace( /(<([^>]+)>)/ig, '' );
+
+			haystack = _.union( name, data.get( 'id' ), description, author, data.get( 'tags' ) );
 
 			if ( match.test( data.get( 'author' ) ) && term.length > 2 ) {
 				data.set( 'displayAuthor', true );
@@ -824,7 +829,7 @@ themes.view.Themes = wp.Backbone.View.extend({
 	index: 0,
 
 	// The theme count element
-	count: $( '.wp-filter .theme-count' ),
+	count: $( '.wp-core-ui .theme-count' ),
 
 	initialize: function( options ) {
 		var self = this;
@@ -895,7 +900,7 @@ themes.view.Themes = wp.Backbone.View.extend({
 	// and keeping theme count in sync
 	render: function() {
 		// Clear the DOM, please
-		this.$el.html( '' );
+		this.$el.empty();
 
 		// If the user doesn't have switch capabilities
 		// or there is only one theme in the collection

@@ -112,7 +112,7 @@ function wp_signon( $credentials = array(), $secure_cookie = '' ) {
  * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
  */
 function wp_authenticate_username_password($user, $username, $password) {
-	if ( is_a( $user, 'WP_User' ) ) {
+	if ( $user instanceof WP_User ) {
 		return $user;
 	}
 
@@ -167,7 +167,7 @@ function wp_authenticate_username_password($user, $username, $password) {
  * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
  */
 function wp_authenticate_cookie($user, $username, $password) {
-	if ( is_a( $user, 'WP_User' ) ) {
+	if ( $user instanceof WP_User ) {
 		return $user;
 	}
 
@@ -202,7 +202,7 @@ function wp_authenticate_cookie($user, $username, $password) {
  * @return WP_User|WP_Error WP_User on success, WP_Error if the user is considered a spammer.
  */
 function wp_authenticate_spam_check( $user ) {
-	if ( $user && is_a( $user, 'WP_User' ) && is_multisite() ) {
+	if ( $user instanceof WP_User && is_multisite() ) {
 		/**
 		 * Filter whether the user has been marked as a spammer.
 		 *
@@ -473,6 +473,17 @@ class WP_User_Query {
 	 */
 	private $total_users = 0;
 
+	/**
+	 * Metadata query container.
+	 *
+	 * @since 4.2.0
+	 * @access public
+	 * @var object WP_Meta_Query
+	 */
+	public $meta_query = false;
+
+	private $compat_fields = array( 'results', 'total_users' );
+
 	// SQL clauses
 	public $query_fields;
 	public $query_from;
@@ -486,7 +497,6 @@ class WP_User_Query {
 	 * @since 3.1.0
 	 *
 	 * @param null|string|array $args Optional. The query variables.
-	 * @return WP_User_Query
 	 */
 	public function __construct( $query = null ) {
 		if ( ! empty( $query ) ) {
@@ -499,6 +509,8 @@ class WP_User_Query {
 	 * Prepare the query variables.
 	 *
 	 * @since 3.1.0
+	 * @since 4.2.0 Added 'meta_value_num' support for `$orderby` parameter. Added multi-dimensional array syntax
+	 *              for `$orderby` parameter.
 	 * @access public
 	 *
 	 * @param string|array $query {
@@ -519,12 +531,19 @@ class WP_User_Query {
 	 *                                         column to search in based on search string. Default empty.
 	 *     @type array        $search_columns  Array of column names to be searched. Accepts 'ID', 'login',
 	 *                                         'nicename', 'email', 'url'. Default empty array.
-	 *     @type string       $orderby         Field to sort the retrieved users by. Accepts 'ID', 'display_name',
-	 *                                         'login', 'nicename', 'email', 'url', 'registered', 'post_count', or
-	 *                                         'meta_value'. To use 'meta_value', `$meta_key` must be also be defined.
+	 *     @type string|array $orderby         Field(s) to sort the retrieved users by. May be a single value,
+	 *                                         an array of values, or a multi-dimensional array with fields as keys
+	 *                                         and orders ('ASC' or 'DESC') as values. Accepted values are'ID',
+	 *                                         'display_name' (or 'name'), 'user_login' (or 'login'),
+	 *                                         'user_nicename' (or 'nicename'), 'user_email' (or 'email'),
+	 *                                         'user_url' (or 'url'), 'user_registered' (or 'registered'),
+	 *                                         'post_count', 'meta_value', 'meta_value_num', the value of
+	 *                                         `$meta_key`, or an array key of `$meta_query`. To use 'meta_value'
+	 *                                         or 'meta_value_num', `$meta_key` must be also be defined.
 	 *                                         Default 'user_login'.
-	 *     @type string       $order           Designates ascending or descending order of users. Accepts 'ASC',
-	 *                                         'DESC'. Default 'ASC'.
+	 *     @type string       $order           Designates ascending or descending order of users. Order values
+	 *                                         passed as part of an `$orderby` array take precedence over this
+	 *                                         parameter. Accepts 'ASC', 'DESC'. Default 'ASC'.
 	 *     @type int          $offset          Number of users to offset in retrieved results. Can be used in
 	 *                                         conjunction with pagination. Default 0.
 	 *     @type int          $number          Number of users to limit the query for. Can be used in conjunction
@@ -607,47 +626,97 @@ class WP_User_Query {
 			$include = false;
 		}
 
-		// sorting
-		if ( isset( $qv['orderby'] ) ) {
-			if ( in_array( $qv['orderby'], array('nicename', 'email', 'url', 'registered') ) ) {
-				$orderby = 'user_' . $qv['orderby'];
-			} elseif ( in_array( $qv['orderby'], array('user_nicename', 'user_email', 'user_url', 'user_registered') ) ) {
-				$orderby = $qv['orderby'];
-			} elseif ( 'name' == $qv['orderby'] || 'display_name' == $qv['orderby'] ) {
-				$orderby = 'display_name';
-			} elseif ( 'post_count' == $qv['orderby'] ) {
-				// todo: avoid the JOIN
-				$where = get_posts_by_author_sql('post');
-				$this->query_from .= " LEFT OUTER JOIN (
-					SELECT post_author, COUNT(*) as post_count
-					FROM $wpdb->posts
-					$where
-					GROUP BY post_author
-				) p ON ({$wpdb->users}.ID = p.post_author)
-				";
-				$orderby = 'post_count';
-			} elseif ( 'ID' == $qv['orderby'] || 'id' == $qv['orderby'] ) {
-				$orderby = 'ID';
-			} elseif ( 'meta_value' == $qv['orderby'] ) {
-				$orderby = "$wpdb->usermeta.meta_value";
-			} else if ( 'include' === $qv['orderby'] && ! empty( $include ) ) {
-				// Sanitized earlier.
-				$include_sql = implode( ',', $include );
-				$orderby = "FIELD( $wpdb->users.ID, $include_sql )";
-			} else {
-				$orderby = 'user_login';
+		// Meta query.
+		$this->meta_query = new WP_Meta_Query();
+		$this->meta_query->parse_query_vars( $qv );
+
+		$blog_id = 0;
+		if ( isset( $qv['blog_id'] ) ) {
+			$blog_id = absint( $qv['blog_id'] );
+		}
+
+		$role = '';
+		if ( isset( $qv['role'] ) ) {
+			$role = trim( $qv['role'] );
+		}
+
+		if ( $blog_id && ( $role || is_multisite() ) ) {
+			$cap_meta_query = array();
+			$cap_meta_query['key'] = $wpdb->get_blog_prefix( $blog_id ) . 'capabilities';
+
+			if ( $role ) {
+				$cap_meta_query['value'] = '"' . $role . '"';
+				$cap_meta_query['compare'] = 'like';
+			}
+
+			if ( empty( $this->meta_query->queries ) ) {
+				$this->meta_query->queries = array( $cap_meta_query );
+			} elseif ( ! in_array( $cap_meta_query, $this->meta_query->queries, true ) ) {
+				// Append the cap query to the original queries and reparse the query.
+				$this->meta_query->queries = array(
+					'relation' => 'AND',
+					array( $this->meta_query->queries, $cap_meta_query ),
+				);
+			}
+
+			$this->meta_query->parse_query_vars( $this->meta_query->queries );
+		}
+
+		if ( ! empty( $this->meta_query->queries ) ) {
+			$clauses = $this->meta_query->get_sql( 'user', $wpdb->users, 'ID', $this );
+			$this->query_from .= $clauses['join'];
+			$this->query_where .= $clauses['where'];
+
+			if ( 'OR' == $this->meta_query->relation ) {
+				$this->query_fields = 'DISTINCT ' . $this->query_fields;
 			}
 		}
 
-		if ( empty( $orderby ) )
-			$orderby = 'user_login';
-
+		// sorting
 		$qv['order'] = isset( $qv['order'] ) ? strtoupper( $qv['order'] ) : '';
-		if ( 'ASC' == $qv['order'] )
-			$order = 'ASC';
-		else
-			$order = 'DESC';
-		$this->query_orderby = "ORDER BY $orderby $order";
+		$order = $this->parse_order( $qv['order'] );
+
+		if ( empty( $qv['orderby'] ) ) {
+			// Default order is by 'user_login'.
+			$ordersby = array( 'user_login' => $order );
+		} else if ( is_array( $qv['orderby'] ) ) {
+			$ordersby = $qv['orderby'];
+		} else {
+			// 'orderby' values may be a comma- or space-separated list.
+			$ordersby = preg_split( '/[,\s]+/', $qv['orderby'] );
+		}
+
+		$orderby_array = array();
+		foreach ( $ordersby as $_key => $_value ) {
+			if ( ! $_value ) {
+				continue;
+			}
+
+			if ( is_int( $_key ) ) {
+				// Integer key means this is a flat array of 'orderby' fields.
+				$_orderby = $_value;
+				$_order = $order;
+			} else {
+				// Non-integer key means this the key is the field and the value is ASC/DESC.
+				$_orderby = $_key;
+				$_order = $_value;
+			}
+
+			$parsed = $this->parse_orderby( $_orderby );
+
+			if ( ! $parsed ) {
+				continue;
+			}
+
+			$orderby_array[] = $parsed . ' ' . $this->parse_order( $_order );
+		}
+
+		// If no valid clauses were found, order by user_login.
+		if ( empty( $orderby_array ) ) {
+			$orderby_array[] = "user_login $order";
+		}
+
+		$this->query_orderby = 'ORDER BY ' . implode( ', ', $orderby_array );
 
 		// limit
 		if ( isset( $qv['number'] ) && $qv['number'] ) {
@@ -706,53 +775,11 @@ class WP_User_Query {
 			$this->query_where .= $this->get_search_sql( $search, $search_columns, $wild );
 		}
 
-		$blog_id = 0;
-		if ( isset( $qv['blog_id'] ) )
-			$blog_id = absint( $qv['blog_id'] );
-
 		if ( isset( $qv['who'] ) && 'authors' == $qv['who'] && $blog_id ) {
 			$qv['meta_key'] = $wpdb->get_blog_prefix( $blog_id ) . 'user_level';
 			$qv['meta_value'] = 0;
 			$qv['meta_compare'] = '!=';
 			$qv['blog_id'] = $blog_id = 0; // Prevent extra meta query
-		}
-
-		$meta_query = new WP_Meta_Query();
-		$meta_query->parse_query_vars( $qv );
-
-		$role = '';
-		if ( isset( $qv['role'] ) )
-			$role = trim( $qv['role'] );
-
-		if ( $blog_id && ( $role || is_multisite() ) ) {
-			$cap_meta_query = array();
-			$cap_meta_query['key'] = $wpdb->get_blog_prefix( $blog_id ) . 'capabilities';
-
-			if ( $role ) {
-				$cap_meta_query['value'] = '"' . $role . '"';
-				$cap_meta_query['compare'] = 'like';
-			}
-
-			if ( empty( $meta_query->queries ) ) {
-				$meta_query->queries = array( $cap_meta_query );
-			} elseif ( ! in_array( $cap_meta_query, $meta_query->queries, true ) ) {
-				// Append the cap query to the original queries and reparse the query.
-				$meta_query->queries = array(
-					'relation' => 'AND',
-					array( $meta_query->queries, $cap_meta_query ),
-				);
-			}
-
-			$meta_query->parse_query_vars( $meta_query->queries );
-		}
-
-		if ( !empty( $meta_query->queries ) ) {
-			$clauses = $meta_query->get_sql( 'user', $wpdb->users, 'ID', $this );
-			$this->query_from .= $clauses['join'];
-			$this->query_where .= $clauses['where'];
-
-			if ( 'OR' == $meta_query->relation )
-				$this->query_fields = 'DISTINCT ' . $this->query_fields;
 		}
 
 		if ( ! empty( $include ) ) {
@@ -920,6 +947,79 @@ class WP_User_Query {
 	}
 
 	/**
+	 * Parse and sanitize 'orderby' keys passed to the user query.
+	 *
+	 * @since 4.2.0
+	 * @access protected
+	 *
+	 * @global wpdb $wpdb WordPress database abstraction object.
+	 *
+	 * @param string $orderby Alias for the field to order by.
+	 * @return string|bool Value to used in the ORDER clause, if `$orderby` is valid. False otherwise.
+	 */
+	protected function parse_orderby( $orderby ) {
+		global $wpdb;
+
+		$meta_query_clauses = $this->meta_query->get_clauses();
+
+		$_orderby = '';
+		if ( in_array( $orderby, array( 'login', 'nicename', 'email', 'url', 'registered' ) ) ) {
+			$_orderby = 'user_' . $orderby;
+		} elseif ( in_array( $orderby, array( 'user_login', 'user_nicename', 'user_email', 'user_url', 'user_registered' ) ) ) {
+			$_orderby = $orderby;
+		} elseif ( 'name' == $orderby || 'display_name' == $orderby ) {
+			$_orderby = 'display_name';
+		} elseif ( 'post_count' == $orderby ) {
+			// todo: avoid the JOIN
+			$where = get_posts_by_author_sql( 'post' );
+			$this->query_from .= " LEFT OUTER JOIN (
+				SELECT post_author, COUNT(*) as post_count
+				FROM $wpdb->posts
+				$where
+				GROUP BY post_author
+			) p ON ({$wpdb->users}.ID = p.post_author)
+			";
+			$_orderby = 'post_count';
+		} elseif ( 'ID' == $orderby || 'id' == $orderby ) {
+			$_orderby = 'ID';
+		} elseif ( 'meta_value' == $orderby || $this->get( 'meta_key' ) == $orderby ) {
+			$_orderby = "$wpdb->usermeta.meta_value";
+		} elseif ( 'meta_value_num' == $orderby ) {
+			$_orderby = "$wpdb->usermeta.meta_value+0";
+		} elseif ( 'include' === $orderby && ! empty( $this->query_vars['include'] ) ) {
+			$include = wp_parse_id_list( $this->query_vars['include'] );
+			$include_sql = implode( ',', $include );
+			$_orderby = "FIELD( $wpdb->users.ID, $include_sql )";
+		} elseif ( isset( $meta_query_clauses[ $orderby ] ) ) {
+			$meta_clause = $meta_query_clauses[ $orderby ];
+			$_orderby = sprintf( "CAST(%s.meta_value AS %s)", esc_sql( $meta_clause['alias'] ), esc_sql( $meta_clause['cast'] ) );
+		}
+
+		return $_orderby;
+	}
+
+	/**
+	 * Parse an 'order' query variable and cast it to ASC or DESC as necessary.
+	 *
+	 * @since 4.2.0
+	 * @access protected
+	 *
+	 * @param string $order The 'order' query variable.
+	 * @return string The sanitized 'order' query variable.
+	 */
+	protected function parse_order( $order ) {
+		if ( ! is_string( $order ) || empty( $order ) ) {
+			return 'DESC';
+		}
+
+		if ( 'ASC' === strtoupper( $order ) ) {
+			return 'ASC';
+		} else {
+			return 'DESC';
+		}
+	}
+
+	/**
 	 * Make private properties readable for backwards compatibility.
 	 *
 	 * @since 4.0.0
@@ -929,7 +1029,9 @@ class WP_User_Query {
 	 * @return mixed Property.
 	 */
 	public function __get( $name ) {
-		return $this->$name;
+		if ( in_array( $name, $this->compat_fields ) ) {
+			return $this->$name;
+		}
 	}
 
 	/**
@@ -938,12 +1040,14 @@ class WP_User_Query {
 	 * @since 4.0.0
 	 * @access public
 	 *
-	 * @param string $name  Property to set.
+	 * @param string $name  Property to check if set.
 	 * @param mixed  $value Property value.
 	 * @return mixed Newly-set property.
 	 */
 	public function __set( $name, $value ) {
-		return $this->$name = $value;
+		if ( in_array( $name, $this->compat_fields ) ) {
+			return $this->$name = $value;
+		}
 	}
 
 	/**
@@ -956,7 +1060,9 @@ class WP_User_Query {
 	 * @return bool Whether the property is set.
 	 */
 	public function __isset( $name ) {
-		return isset( $this->$name );
+		if ( in_array( $name, $this->compat_fields ) ) {
+			return isset( $this->$name );
+		}
 	}
 
 	/**
@@ -968,7 +1074,9 @@ class WP_User_Query {
 	 * @param string $name Property to unset.
 	 */
 	public function __unset( $name ) {
-		unset( $this->$name );
+		if ( in_array( $name, $this->compat_fields ) ) {
+			unset( $this->$name );
+		}
 	}
 
 	/**
@@ -982,7 +1090,10 @@ class WP_User_Query {
 	 * @return mixed|bool Return value of the callback, false otherwise.
 	 */
 	public function __call( $name, $arguments ) {
-		return call_user_func_array( array( $this, $name ), $arguments );
+		if ( 'get_search_sql' === $name ) {
+			return call_user_func_array( array( $this, $name ), $arguments );
+		}
+		return false;
 	}
 }
 
@@ -1514,7 +1625,7 @@ function sanitize_user_field($field, $value, $user_id, $context) {
 			$value = esc_html( $value ); // textarea_escaped?
 		else
 			$value = esc_attr($value);
-	} else if ( 'db' == $context ) {
+	} elseif ( 'db' == $context ) {
 		if ( $prefixed ) {
 			/** This filter is documented in wp-includes/post.php */
 			$value = apply_filters( "pre_{$field}", $value );
@@ -1559,11 +1670,11 @@ function sanitize_user_field($field, $value, $user_id, $context) {
 	if ( 'user_url' == $field )
 		$value = esc_url($value);
 
-	if ( 'attribute' == $context )
-		$value = esc_attr($value);
-	else if ( 'js' == $context )
-		$value = esc_js($value);
-
+	if ( 'attribute' == $context ) {
+		$value = esc_attr( $value );
+	} elseif ( 'js' == $context ) {
+		$value = esc_js( $value );
+	}
 	return $value;
 }
 
@@ -1686,7 +1797,7 @@ function validate_username( $username ) {
  *                                        to build $display_name if unspecified.
  *     @type string|bool $rich_editing    Whether to enable the rich-editor for the user. False
  *                                        if not empty.
- *     @type string      $date_registered Date the user registered. Format is 'Y-m-d H:i:s'.
+ *     @type string      $user_registered Date the user registered. Format is 'Y-m-d H:i:s'.
  *     @type string      $role            User's role.
  *     @type string      $jabber          User's Jabber account username.
  *     @type string      $aim             User's AIM account username.
@@ -1698,9 +1809,9 @@ function validate_username( $username ) {
 function wp_insert_user( $userdata ) {
 	global $wpdb;
 
-	if ( is_a( $userdata, 'stdClass' ) ) {
+	if ( $userdata instanceof stdClass ) {
 		$userdata = get_object_vars( $userdata );
-	} elseif ( is_a( $userdata, 'WP_User' ) ) {
+	} elseif ( $userdata instanceof WP_User ) {
 		$userdata = $userdata->to_array();
 	}
 	// Are we updating or creating?
@@ -1957,17 +2068,22 @@ function wp_insert_user( $userdata ) {
  * @return int|WP_Error The updated user's ID or a WP_Error object if the user could not be updated.
  */
 function wp_update_user($userdata) {
-	if ( is_a( $userdata, 'stdClass' ) )
+	if ( $userdata instanceof stdClass ) {
 		$userdata = get_object_vars( $userdata );
-	elseif ( is_a( $userdata, 'WP_User' ) )
+	} elseif ( $userdata instanceof WP_User ) {
 		$userdata = $userdata->to_array();
+	}
 
-	$ID = (int) $userdata['ID'];
+	$ID = isset( $userdata['ID'] ) ? (int) $userdata['ID'] : 0;
+	if ( ! $ID ) {
+		return new WP_Error( 'invalid_user_id', __( 'Invalid user ID.' ) );
+	}
 
 	// First, get all of the original fields
 	$user_obj = get_userdata( $ID );
-	if ( ! $user_obj )
+	if ( ! $user_obj ) {
 		return new WP_Error( 'invalid_user_id', __( 'Invalid user ID.' ) );
+	}
 
 	$user = $user_obj->to_array();
 

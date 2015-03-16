@@ -45,7 +45,7 @@ inlineEditTax = {
 	},
 
 	edit : function(id) {
-		var editRow, rowData,
+		var editRow, rowData, val,
 			t = this;
 		t.revert();
 
@@ -56,14 +56,17 @@ inlineEditTax = {
 		editRow = $('#inline-edit').clone(true), rowData = $('#inline_'+id);
 		$('td', editRow).attr('colspan', $('.widefat:first thead th:visible').length);
 
-		if ( $( t.what + id ).hasClass( 'alternate' ) ) {
-			$(editRow).addClass('alternate');
-		}
+		$(t.what+id).hide().before(editRow).before('<tr class="hidden"></tr>');
 
-		$(t.what+id).hide().after(editRow);
+		val = $('.name', rowData);
+		val.find( 'img' ).replaceWith( function() { return this.alt; } );
+		val = val.text();
+		$(':input[name="name"]', editRow).val( val );
 
-		$(':input[name="name"]', editRow).val( $('.name', rowData).text() );
-		$(':input[name="slug"]', editRow).val( $('.slug', rowData).text() );
+		val = $('.slug', rowData);
+		val.find( 'img' ).replaceWith( function() { return this.alt; } );
+		val = val.text();
+		$(':input[name="slug"]', editRow).val( val );
 
 		$(editRow).attr('id', 'edit-'+id).addClass('inline-editor').show();
 		$('.ptitle', editRow).eq(0).focus();
@@ -93,26 +96,33 @@ inlineEditTax = {
 		// make ajax request
 		$.post( ajaxurl, params,
 			function(r) {
-				var row, new_id;
+				var row, new_id, option_value;
 				$('table.widefat .spinner').hide();
 
 				if (r) {
 					if ( -1 !== r.indexOf( '<tr' ) ) {
-						$(inlineEditTax.what+id).remove();
+						$(inlineEditTax.what+id).siblings('tr.hidden').addBack().remove();
 						new_id = $(r).attr('id');
 
 						$('#edit-'+id).before(r).remove();
-						row = new_id ? $('#'+new_id) : $(inlineEditTax.what+id);
+
+						if ( new_id ) {
+							option_value = new_id.replace( inlineEditTax.type + '-', '' );
+							row = $( '#' + new_id );
+						} else {
+							option_value = id;
+							row = $( inlineEditTax.what + id );
+						}
+
+						// Update the value in the Parent dropdown.
+						$( '#parent' ).find( 'option[value=' + option_value + ']' ).text( row.find( '.row-title' ).text() );
+
 						row.hide().fadeIn();
 					} else {
 						$('#edit-'+id+' .inline-edit-save .error').html(r).show();
 					}
 				} else {
 					$('#edit-'+id+' .inline-edit-save .error').html(inlineEditL10n.error).show();
-				}
-
-				if ( $( row ).prev( 'tr' ).hasClass( 'alternate' ) ) {
-					$(row).removeClass('alternate');
 				}
 			}
 		);
@@ -124,7 +134,7 @@ inlineEditTax = {
 
 		if ( id ) {
 			$('table.widefat .spinner').hide();
-			$('#'+id).remove();
+			$('#'+id).siblings('tr.hidden').addBack().remove();
 			id = id.substr( id.lastIndexOf('-') + 1 );
 			$(this.what+id).show();
 		}

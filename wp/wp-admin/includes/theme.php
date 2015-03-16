@@ -69,9 +69,6 @@ function delete_theme($stylesheet, $redirect = '') {
 		return new WP_Error( 'could_not_remove_theme', sprintf( __( 'Could not fully remove the theme %s.' ), $stylesheet ) );
 	}
 
-	$translations_dir = $wp_filesystem->wp_lang_dir();
-	$translations_dir = trailingslashit( $translations_dir );
-
 	$theme_translations = wp_get_installed_translations( 'themes' );
 
 	// Remove language files, silently.
@@ -149,8 +146,9 @@ function get_theme_update_available( $theme ) {
 	if ( !isset($themes_update) )
 		$themes_update = get_site_transient('update_themes');
 
-	if ( ! is_a( $theme, 'WP_Theme' ) )
+	if ( ! ( $theme instanceof WP_Theme ) ) {
 		return false;
+	}
 
 	$stylesheet = $theme->get_stylesheet();
 
@@ -167,7 +165,7 @@ function get_theme_update_available( $theme ) {
 			if ( ! current_user_can('update_themes') ) {
 				$html = sprintf( '<p><strong>' . __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a>.' ) . '</strong></p>',
 					$theme_name, esc_url( $details_url ), esc_attr( $theme['Name'] ), $update['new_version'] );
-			} else if ( empty( $update['package'] ) ) {
+			} elseif ( empty( $update['package'] ) ) {
 				$html = sprintf( '<p><strong>' . __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a>. <em>Automatic update is unavailable for this theme.</em>' ) . '</strong></p>',
 					$theme_name, esc_url( $details_url ), esc_attr( $theme['Name'] ), $update['new_version'] );
 			} else {
@@ -361,19 +359,19 @@ function themes_api( $action, $args = null ) {
 		if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
 			$url = set_url_scheme( $url, 'https' );
 
-		$args = array(
+		$http_args = array(
 			'body' => array(
 				'action' => $action,
 				'request' => serialize( $args )
 			)
 		);
-		$request = wp_remote_post( $url, $args );
+		$request = wp_remote_post( $url, $http_args );
 
 		if ( $ssl && is_wp_error( $request ) ) {
 			if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 				trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
 			}
-			$request = wp_remote_post( $http_url, $args );
+			$request = wp_remote_post( $http_url, $http_args );
 		}
 
 		if ( is_wp_error($request) ) {
@@ -430,6 +428,9 @@ function wp_prepare_themes_for_js( $themes = null ) {
 	}
 
 	WP_Theme::sort_by_name( $themes );
+
+	$parents = array();
+
 	foreach ( $themes as $theme ) {
 		$slug = $theme->get_stylesheet();
 		$encoded_slug = urlencode( $slug );
@@ -469,7 +470,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 	}
 
 	// Remove 'delete' action if theme has an active child
-	if ( isset( $parents ) && array_key_exists( $current_theme, $parents ) ) {
+	if ( ! empty( $parents ) && array_key_exists( $current_theme, $parents ) ) {
 		unset( $prepared_themes[ $parents[ $current_theme ] ]['actions']['delete'] );
 	}
 
@@ -485,3 +486,58 @@ function wp_prepare_themes_for_js( $themes = null ) {
 	$prepared_themes = apply_filters( 'wp_prepare_themes_for_js', $prepared_themes );
 	return array_values( $prepared_themes );
 }
+
+/**
+ * Print JS templates for the theme-browsing UI in the Customizer.
+ *
+ * @since 4.2.0
+ */
+function customize_themes_print_templates() {
+	?>
+	<script type="text/html" id="tmpl-customize-themes-details-view">
+		<div class="theme-backdrop"></div>
+		<div class="theme-wrap">
+			<div class="theme-header">
+				<button type="button" class="left dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Show previous theme' ); ?></span></button>
+				<button type="button" class="right dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Show next theme' ); ?></span></button>
+				<button type="button" class="close dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Close details dialog' ); ?></span></button>
+			</div>
+			<div class="theme-about">
+				<div class="theme-screenshots">
+				<# if ( data.screenshot[0] ) { #>
+					<div class="screenshot"><img src="{{ data.screenshot[0] }}" alt="" /></div>
+				<# } else { #>
+					<div class="screenshot blank"></div>
+				<# } #>
+				</div>
+
+				<div class="theme-info">
+					<# if ( data.active ) { #>
+						<span class="current-label"><?php _e( 'Current Theme' ); ?></span>
+					<# } #>
+					<h3 class="theme-name">{{{ data.name }}}<span class="theme-version"><?php printf( __( 'Version: %s' ), '{{ data.version }}' ); ?></span></h3>
+					<h4 class="theme-author"><?php printf( __( 'By %s' ), '{{{ data.authorAndUri }}}' ); ?></h4>
+					<p class="theme-description">{{{ data.description }}}</p>
+
+					<# if ( data.parent ) { #>
+						<p class="parent-theme"><?php printf( __( 'This is a child theme of %s.' ), '<strong>{{{ data.parent }}}</strong>' ); ?></p>
+					<# } #>
+
+					<# if ( data.tags ) { #>
+						<p class="theme-tags"><span><?php _e( 'Tags:' ); ?></span> {{ data.tags }}</p>
+					<# } #>
+				</div>
+			</div>
+
+			<div class="theme-actions">
+				<# if ( ! data.active ) { #>
+					<div class="inactive-theme">
+						<a href="<?php echo add_query_arg( 'theme', '{{ data.id }}', remove_query_arg( 'theme' ) ); ?>" target="_top" class="button button-primary"><?php _e( 'Live Preview' ); ?></a>
+					</div>
+				<# } #>
+			</div>
+		</div>
+	</script>
+	<?php
+}
+add_action( 'customize_controls_print_footer_scripts', 'customize_themes_print_templates' );

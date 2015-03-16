@@ -17,7 +17,7 @@ $pagenum = $wp_list_table->get_pagenum();
 $title = __('Users');
 $parent_file = 'users.php';
 
-add_screen_option( 'per_page', array('label' => _x( 'Users', 'users per page (screen options)' )) );
+add_screen_option( 'per_page' );
 
 // contextual help - choose Help on the top right of admin panel to preview this.
 get_current_screen()->add_help_tab( array(
@@ -209,7 +209,7 @@ case 'delete':
 
 	include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
-<form action="" method="post" name="updateusers" id="updateusers">
+<form method="post" name="updateusers" id="updateusers">
 <?php wp_nonce_field('delete-users') ?>
 <?php echo $referer; ?>
 
@@ -321,7 +321,7 @@ case 'remove':
 
 	include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
-<form action="" method="post" name="updateusers" id="updateusers">
+<form method="post" name="updateusers" id="updateusers">
 <?php wp_nonce_field('remove-users') ?>
 <?php echo $referer; ?>
 
@@ -443,7 +443,7 @@ if ( $usersearch )
 
 <?php $wp_list_table->views(); ?>
 
-<form action="" method="get">
+<form method="get">
 
 <?php $wp_list_table->search_box( __( 'Search Users' ), 'user' ); ?>
 

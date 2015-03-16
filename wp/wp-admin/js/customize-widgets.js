@@ -250,7 +250,7 @@
 
 		// Adds a selected widget to the sidebar
 		submit: function( widgetTpl ) {
-			var widgetId, widget;
+			var widgetId, widget, widgetFormControl;
 
 			if ( ! widgetTpl ) {
 				widgetTpl = this.selected;
@@ -268,7 +268,10 @@
 				return;
 			}
 
-			this.currentSidebarControl.addWidget( widget.get( 'id_base' ) );
+			widgetFormControl = this.currentSidebarControl.addWidget( widget.get( 'id_base' ) );
+			if ( widgetFormControl ) {
+				widgetFormControl.focus();
+			}
 
 			this.close();
 		},
@@ -621,7 +624,8 @@
 			 * Update available sidebars when their rendered state changes
 			 */
 			updateAvailableSidebars = function() {
-				var $sidebarItems = $moveWidgetArea.find( 'li' ), selfSidebarItem;
+				var $sidebarItems = $moveWidgetArea.find( 'li' ), selfSidebarItem,
+					renderedSidebarCount = 0;
 
 				selfSidebarItem = $sidebarItems.filter( function(){
 					return $( this ).data( 'id' ) === self.params.sidebar_id;
@@ -629,18 +633,28 @@
 
 				$sidebarItems.each( function() {
 					var li = $( this ),
-						sidebarId,
-						sidebar;
+						sidebarId, sidebar, sidebarIsRendered;
 
 					sidebarId = li.data( 'id' );
 					sidebar = api.Widgets.registeredSidebars.get( sidebarId );
+					sidebarIsRendered = sidebar.get( 'is_rendered' );
 
-					li.toggle( sidebar.get( 'is_rendered' ) );
+					li.toggle( sidebarIsRendered );
 
-					if ( li.hasClass( 'selected' ) && ! sidebar.get( 'is_rendered' ) ) {
+					if ( sidebarIsRendered ) {
+						renderedSidebarCount += 1;
+					}
+
+					if ( li.hasClass( 'selected' ) && ! sidebarIsRendered ) {
 						selectSidebarItem( selfSidebarItem );
 					}
 				} );
+
+				if ( renderedSidebarCount > 1 ) {
+					self.container.find( '.move-widget' ).show();
+				} else {
+					self.container.find( '.move-widget' ).hide();
+				}
 			};
 
 			updateAvailableSidebars();
@@ -671,10 +685,10 @@
 
 					if ( isMoveUp ) {
 						self.moveUp();
-						$( '#screen-reader-messages' ).text( l10n.widgetMovedUp );
+						wp.a11y.speak( l10n.widgetMovedUp );
 					} else {
 						self.moveDown();
-						$( '#screen-reader-messages' ).text( l10n.widgetMovedDown );
+						wp.a11y.speak( l10n.widgetMovedDown );
 					}
 
 					$( this ).focus(); // re-focus after the container was moved
@@ -684,11 +698,11 @@
 			/**
 			 * Handle selecting a sidebar to move to
 			 */
-			this.container.find( '.widget-area-select' ).on( 'click keypress', 'li', function( e ) {
+			this.container.find( '.widget-area-select' ).on( 'click keypress', 'li', function( event ) {
 				if ( event.type === 'keypress' && ( event.which !== 13 && event.which !== 32 ) ) {
 					return;
 				}
-				e.preventDefault();
+				event.preventDefault();
 				selectSidebarItem( $( this ) );
 			} );
 
@@ -1014,7 +1028,11 @@
 			}
 			data += '&' + $widgetContent.find( '~ :input' ).serialize();
 
+			if ( this._previousUpdateRequest ) {
+				this._previousUpdateRequest.abort();
+			}
 			jqxhr = $.post( wp.ajax.settings.url, data );
+			this._previousUpdateRequest = jqxhr;
 
 			jqxhr.done( function( r ) {
 				var message, sanitizedForm,	$sanitizedInputs, hasSameInputsInResponse,
@@ -1638,7 +1656,10 @@
 			});
 
 			if ( ! widgetControls.length ) {
+				this.container.find( '.reorder-toggle' ).hide();
 				return;
+			} else {
+				this.container.find( '.reorder-toggle' ).show();
 			}
 
 			$( widgetControls ).each( function () {
@@ -1692,20 +1713,20 @@
 		},
 
 		/**
+		 * Get the widget_form Customize controls associated with the current sidebar.
+		 *
+		 * @since 3.9
 		 * @return {wp.customize.controlConstructor.widget_form[]}
 		 */
 		getWidgetFormControls: function() {
-			var formControls;
+			var formControls = [];
 
-			formControls = _( this.setting() ).map( function( widgetId ) {
+			_( this.setting() ).each( function( widgetId ) {
 				var settingId = widgetIdToSettingId( widgetId ),
 					formControl = api.control( settingId );
-
-				if ( ! formControl ) {
-					return;
+				if ( formControl ) {
+					formControls.push( formControl );
 				}
-
-				return formControl;
 			} );
 
 			return formControls;
@@ -1830,18 +1851,14 @@
 
 			controlContainer.slideDown( function() {
 				if ( isExistingWidget ) {
-					widgetFormControl.expand();
 					widgetFormControl.updateWidget( {
 						instance: widgetFormControl.setting(),
 						complete: function( error ) {
 							if ( error ) {
 								throw error;
 							}
-							widgetFormControl.focus();
 						}
 					} );
-				} else {
-					widgetFormControl.focus();
 				}
 			} );
 

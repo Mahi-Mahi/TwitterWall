@@ -260,7 +260,7 @@ function twentyfourteen_scripts() {
 		) );
 	}
 
-	wp_enqueue_script( 'twentyfourteen-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), '20140616', true );
+	wp_enqueue_script( 'twentyfourteen-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), '20150315', true );
 }
 add_action( 'wp_enqueue_scripts', 'twentyfourteen_scripts' );
 
@@ -330,7 +330,7 @@ function twentyfourteen_the_attached_image() {
 
 		// or get the URL of the first image attachment.
 		else {
-			$next_attachment_url = get_attachment_link( array_shift( $attachment_ids ) );
+			$next_attachment_url = get_attachment_link( current( $attachment_ids ) );
 		}
 	}
 

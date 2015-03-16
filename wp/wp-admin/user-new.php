@@ -280,7 +280,7 @@ if ( is_multisite() ) {
 		$type  = 'text';
 	}
 ?>
-<form action="" method="post" name="adduser" id="adduser" class="validate" novalidate="novalidate"<?php
+<form method="post" name="adduser" id="adduser" class="validate" novalidate="novalidate"<?php
 	/**
 	 * Fires inside the adduser form tag.
 	 *
@@ -324,7 +324,7 @@ if ( is_multisite() ) {
  */
 do_action( 'user_new_form', 'add-existing-user' );
 ?>
-<?php submit_button( __( 'Add Existing User '), 'primary', 'adduser', true, array( 'id' => 'addusersub' ) ); ?>
+<?php submit_button( __( 'Add Existing User' ), 'primary', 'adduser', true, array( 'id' => 'addusersub' ) ); ?>
 </form>
 <?php
 } // is_multisite()
@@ -334,7 +334,7 @@ if ( current_user_can( 'create_users') ) {
 		echo '<h3 id="create-new-user">' . __( 'Add New User' ) . '</h3>';
 ?>
 <p><?php _e('Create a brand new user and add them to this site.'); ?></p>
-<form action="" method="post" name="createuser" id="createuser" class="validate" novalidate="novalidate"<?php
+<form method="post" name="createuser" id="createuser" class="validate" novalidate="novalidate"<?php
 	/** This action is documented in wp-admin/user-new.php */
 	do_action( 'user_new_form_tag' );
 ?>>
@@ -402,7 +402,7 @@ if ( apply_filters( 'show_password_fields', true ) ) : ?>
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label for="send_password"><?php _e('Send Password?') ?></label></th>
+		<th scope="row"><?php _e('Send Password?') ?></th>
 		<td><label for="send_password"><input type="checkbox" name="send_password" id="send_password" value="1" <?php checked( $new_user_send_password ); ?> /> <?php _e('Send this password to the new user by email.'); ?></label></td>
 	</tr>
 <?php endif; ?>
@@ -431,7 +431,7 @@ if ( apply_filters( 'show_password_fields', true ) ) : ?>
 do_action( 'user_new_form', 'add-new-user' );
 ?>
 
-<?php submit_button( __( 'Add New User '), 'primary', 'createuser', true, array( 'id' => 'createusersub' ) ); ?>
+<?php submit_button( __( 'Add New User' ), 'primary', 'createuser', true, array( 'id' => 'createusersub' ) ); ?>
 
 </form>
 <?php } // current_user_can('create_users') ?>

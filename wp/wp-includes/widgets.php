@@ -166,7 +166,7 @@ class WP_Widget {
 
 	/**
 	 * PHP4 constructor
-	 * 
+	 *
 	 * @param string $id_base
 	 * @param string $name
 	 * @param array  $widget_options
@@ -813,6 +813,12 @@ function register_sidebar($args = array()) {
 		'before_title' => '<h2 class="widgettitle">',
 		'after_title' => "</h2>\n",
 	);
+
+	if ( current_theme_supports( 'html5', 'widgets' ) ) {
+		$defaults['before_widget'] = '<aside id="%1$s" class="widget %2$s">';
+		$defaults['after_widget'] = "</aside>\n";
+		$defaults['before_title'] = '<h2 class="widget-title">';
+	}
 
 	$sidebar = wp_parse_args( $args, $defaults );
 
@@ -1552,8 +1558,9 @@ function the_widget( $widget, $instance = array(), $args = array() ) {
 	global $wp_widget_factory;
 
 	$widget_obj = $wp_widget_factory->widgets[$widget];
-	if ( !is_a($widget_obj, 'WP_Widget') )
+	if ( ! ( $widget_obj instanceof WP_Widget ) ) {
 		return;
+	}
 
 	$before_widget = sprintf('<div class="widget %s">', $widget_obj->widget_options['classname'] );
 	$default_args = array( 'before_widget' => $before_widget, 'after_widget' => "</div>", 'before_title' => '<h2 class="widgettitle">', 'after_title' => '</h2>' );

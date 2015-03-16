@@ -166,10 +166,10 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 			</div>
 		</div>
 	</div>
-	<div class="theme-browser content-filterable"></div>
+	<div class="theme-browser content-filterable" aria-live="polite">
+		<p class="no-themes"><?php _e( 'No themes found. Try a different search.' ); ?></p>
+	</div>
 	<div class="theme-install-overlay wp-full-overlay expanded"></div>
-
-	<p class="no-themes"><?php _e( 'No themes found. Try a different search.' ); ?></p>
 	<span class="spinner"></span>
 
 	<br class="clear" />
@@ -233,18 +233,20 @@ if ( $tab ) {
 				<img class="theme-screenshot" src="{{ data.screenshot_url }}" alt="" />
 
 				<div class="theme-details">
-					<div class="rating rating-{{ Math.round( data.rating / 10 ) * 10 }}">
-						<span class="one"></span>
-						<span class="two"></span>
-						<span class="three"></span>
-						<span class="four"></span>
-						<span class="five"></span>
-					<# if ( data.num_ratings ) { #>
-						<small class="ratings">{{ data.num_ratings }}</small>
+					<# if ( data.rating ) { #>
+						<div class="rating rating-{{ Math.round( data.rating / 10 ) * 10 }}">
+							<span class="one"></span>
+							<span class="two"></span>
+							<span class="three"></span>
+							<span class="four"></span>
+							<span class="five"></span>
+							<small class="ratings">{{ data.num_ratings }}</small>
+						</div>
 					<# } else { #>
-						<small class="ratings"><?php _e( 'No ratings.' ); ?></small>
+						<div class="rating">
+							<small class="ratings"><?php _e( 'This theme has not been rated yet.' ); ?></small>
+						</div>
 					<# } #>
-					</div>
 					<div class="theme-version"><?php printf( __( 'Version: %s' ), '{{ data.version }}' ); ?></div>
 					<div class="theme-description">{{{ data.description }}}</div>
 				</div>
@@ -258,7 +260,7 @@ if ( $tab ) {
 		</div>
 	</div>
 	<div class="wp-full-overlay-main">
-		<iframe src="{{ data.preview_url }}" />
+		<iframe src="{{ data.preview_url }}" title="<?php esc_attr_e( 'Preview' ); ?>" />
 	</div>
 </script>
 

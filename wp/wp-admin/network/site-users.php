@@ -50,7 +50,7 @@ if ( ! $id )
 
 $details = get_blog_details( $id );
 if ( ! can_edit_network( $details->site_id ) )
-	wp_die( __( 'You do not have permission to access this page.' ) );
+	wp_die( __( 'You do not have permission to access this page.' ), '', array( 'response' => 403 ) );
 
 $is_main_site = is_main_site( $id );
 
@@ -155,7 +155,7 @@ if ( isset( $_GET['action'] ) && 'update-site' == $_GET['action'] ) {
 	exit();
 }
 
-add_screen_option( 'per_page', array( 'label' => _x( 'Users', 'users per page (screen options)' ) ) );
+add_screen_option( 'per_page' );
 
 $site_url_no_http = preg_replace( '#^http(s)?://#', '', get_blogaddress_by_id( $id ) );
 $title_site_url_linked = sprintf( __('Edit Site: <a href="%1$s">%2$s</a>'), get_blogaddress_by_id( $id ), $site_url_no_http );
@@ -177,9 +177,7 @@ if ( ! wp_is_large_network( 'users' ) && apply_filters( 'show_network_site_users
 require( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 
 <script type="text/javascript">
-/* <![CDATA[ */
 var current_site_id = <?php echo $id; ?>;
-/* ]]> */
 </script>
 
 
@@ -235,7 +233,7 @@ if ( isset($_GET['update']) ) :
 	}
 endif; ?>
 
-<form class="search-form" action="" method="get">
+<form class="search-form" method="get">
 <?php $wp_list_table->search_box( __( 'Search Users' ), 'user' ); ?>
 <input type="hidden" name="id" value="<?php echo esc_attr( $id ) ?>" />
 </form>
@@ -264,12 +262,12 @@ if ( current_user_can( 'promote_users' ) && apply_filters( 'show_network_site_us
 	<input type="hidden" name="id" value="<?php echo esc_attr( $id ) ?>" />
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php _e( 'Username' ); ?></th>
+			<th scope="row"><label for="newuser"><?php _e( 'Username' ); ?></label></th>
 			<td><input type="text" class="regular-text wp-suggest-user" name="newuser" id="newuser" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php _e( 'Role' ); ?></th>
-			<td><select name="new_role" id="new_role_0">
+			<th scope="row"><label for="new_role_adduser"><?php _e( 'Role' ); ?></label></th>
+			<td><select name="new_role" id="new_role_adduser">
 			<?php wp_dropdown_roles( get_option( 'default_role' ) ); ?>
 			</select></td>
 		</tr>
@@ -293,16 +291,16 @@ if ( current_user_can( 'create_users' ) && apply_filters( 'show_network_site_use
 	<input type="hidden" name="id" value="<?php echo esc_attr( $id ) ?>" />
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php _e( 'Username' ) ?></th>
-			<td><input type="text" class="regular-text" name="user[username]" /></td>
+			<th scope="row"><label for="user_username"><?php _e( 'Username' ) ?></label></th>
+			<td><input type="text" class="regular-text" name="user[username]" id="user_username" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php _e( 'Email' ) ?></th>
-			<td><input type="text" class="regular-text" name="user[email]" /></td>
+			<th scope="row"><label for="user_email"><?php _e( 'Email' ) ?></label></th>
+			<td><input type="text" class="regular-text" name="user[email]" id="user_email" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php _e( 'Role' ); ?></th>
-			<td><select name="new_role" id="new_role_0">
+			<th scope="row"><label for="new_role_newuser"><?php _e( 'Role' ); ?></label></th>
+			<td><select name="new_role" id="new_role_newuser">
 			<?php wp_dropdown_roles( get_option( 'default_role' ) ); ?>
 			</select></td>
 		</tr>

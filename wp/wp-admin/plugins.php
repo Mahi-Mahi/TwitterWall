@@ -23,6 +23,8 @@ $s = isset($_REQUEST['s']) ? urlencode($_REQUEST['s']) : '';
 // Clean up request URI from temporary args for screen options/paging uri's to work as expected.
 $_SERVER['REQUEST_URI'] = remove_query_arg(array('error', 'deleted', 'activate', 'activate-multi', 'deactivate', 'deactivate-multi', '_error_nonce'), $_SERVER['REQUEST_URI']);
 
+wp_enqueue_script( 'updates' );
+
 if ( $action ) {
 
 	switch ( $action ) {
@@ -319,7 +321,10 @@ if ( $action ) {
 					<?php wp_nonce_field('bulk-plugins') ?>
 					<?php submit_button( $data_to_delete ? __( 'Yes, Delete these files and data' ) : __( 'Yes, Delete these files' ), 'button', 'submit', false ); ?>
 				</form>
-				<form method="post" action="<?php echo esc_url(wp_get_referer()); ?>" style="display:inline;">
+				<?php
+				$referer = wp_get_referer();
+				?>
+				<form method="post" action="<?php echo $referer ? esc_url( $referer ) : ''; ?>" style="display:inline;">
 					<?php submit_button( __( 'No, Return me to the plugin list' ), 'button', 'submit', false ); ?>
 				</form>
 
@@ -356,7 +361,7 @@ $wp_list_table->prepare_items();
 wp_enqueue_script('plugin-install');
 add_thickbox();
 
-add_screen_option( 'per_page', array('label' => _x( 'Plugins', 'plugins per page (screen options)' ), 'default' => 999 ) );
+add_screen_option( 'per_page', array( 'default' => 999 ) );
 
 get_current_screen()->add_help_tab( array(
 'id'		=> 'overview',
@@ -456,11 +461,11 @@ do_action( 'pre_current_active_plugins', $plugins['all'] );
 
 <?php $wp_list_table->views(); ?>
 
-<form method="get" action="">
+<form method="get">
 <?php $wp_list_table->search_box( __( 'Search Installed Plugins' ), 'plugin' ); ?>
 </form>
 
-<form method="post" action="">
+<form method="post" id="bulk-action-form">
 
 <input type="hidden" name="plugin_status" value="<?php echo esc_attr($status) ?>" />
 <input type="hidden" name="paged" value="<?php echo esc_attr($page) ?>" />
