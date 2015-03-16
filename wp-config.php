@@ -26,11 +26,7 @@ define( 'WP_CONTENT_URL', constant('WP_HOME') . '/content' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
-// ==============================================================
-// Salts, for security
-// Grab these from: https://api.wordpress.org/secret-key/1.1/salt
-// ==============================================================
-
+define( 'WPLANG', 'fr_FR' );
 
 // ==============================================================
 // Table prefix

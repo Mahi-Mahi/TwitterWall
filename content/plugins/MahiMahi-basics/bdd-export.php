@@ -2,7 +2,8 @@
 /*
 Plugin Name: Bdd Export
 */
-require_once($_SERVER['DOCUMENT_ROOT'].'/wp/wp-load.php');
+if ( file_exists($_SERVER['DOCUMENT_ROOT'].'/wp/wp-load.php') )
+	require_once($_SERVER['DOCUMENT_ROOT'].'/wp/wp-load.php');
 
 if ( isset($_GET['bdd_export_key']) ):
 

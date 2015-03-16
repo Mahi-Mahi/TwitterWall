@@ -9,6 +9,36 @@ define('TWITTERWALL_URL', WP_PLUGIN_URL.'/twitter-wall');
 
 
 
+if ( ! is_local() ):
+	define( 'ACF_LITE', true );
+endif;
+
+require_once(TWITTERWALL_DIR.'/acf.php');
+require_once(TWITTERWALL_DIR.'/custom-types/banned-account.php');
+require_once(TWITTERWALL_DIR.'/custom-types/banned-word.php');
+
+
+
+
+if( function_exists('acf_add_options_sub_page') ) {
+    // acf_add_options_sub_page( 'Hashtag' );
+}
+
+if( function_exists('acf_add_options_sub_page') ) {
+    acf_add_options_sub_page(array(
+        'title' => 'Hashtag',
+        'parent' => 'index.php',
+        'capability' => 'manage_options'
+    ));
+}
+
+
+
+
+
+
+
+
 function twitterwall_cli_init() {
 	if ( defined('WP_CLI') && WP_CLI ):
 		require_once(TWITTERWALL_DIR.'/wp-cli.php');
@@ -31,7 +61,12 @@ function twitterwall_clean() {
 
 function twitterwall_get_posts() {
 
-	xmpr("mazars_get_tweets");
+	xmpr("twitterwall_get_posts");
+
+	$hashtag = get_field('hashtag', 'option');
+
+	if ( ! $hashtag )
+		return;
 
 	require_once( TWITTERWALL_DIR . '/lib/codebird/codebird.php');
 	\Codebird\Codebird::setConsumerKey(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET); // static, see 'Using multiple Codebird instances'
@@ -47,18 +82,20 @@ function twitterwall_get_posts() {
 		add_option('TWITTER_BEARER', $bearer_token);
 	endif;
 
-	$url = 'result_type=recent&entities=true&since_id=' . $last_id_str;
+	$url = 'q='.urlencode($hashtag).'&lang=fr&result_type=recent&count=100';
+
+	xmpr($url);
 	$response = $cb->search_tweets($url, true);
 
 	// $response = $cb->statuses_userTimeline('screen_name=MazarsFrance');
 
 	// xmpr($response);
 
-	foreach($response as $status):
+	foreach($response->statuses as $status):
 
 		if ( ! $post_id = get_meta_post('origin_id', $status->id_str, true)):
 
-			xmpr($status);
+			// xmpr($status);
 
 			// if ( preg_match("#RT#", $status->text) )
 			// 	continue;
@@ -73,8 +110,9 @@ function twitterwall_get_posts() {
 
 			$metas = array(
 				'origin_id'			=>	$status->id_str,
+				'author'			=>	$status->user->screen_name,
 				'raw_data'			=>	serialize($status),
-				'link'				=>	'https://twitter.com/'.$status->user->screen_name.'/status/'.$status->id_str.'/'
+				'url'				=>	'https://twitter.com/'.$status->user->screen_name.'/status/'.$status->id_str.'/'
 			);
 
 			if ( isset($status->entities->media) && ! empty($status->entities->media) ):
@@ -84,7 +122,12 @@ function twitterwall_get_posts() {
 				$metas['image_url'] 	=	$image_url;
 			endif;
 
+			xmpr($data);
+
 			$post_id = wp_insert_post($data);
+
+				xmpr($post_id);
+
 
 			if ( is_wp_error($post_id) ):
 
