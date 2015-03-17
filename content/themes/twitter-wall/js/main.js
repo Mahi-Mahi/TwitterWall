@@ -12,7 +12,7 @@ jQuery(function() {
 	};
 
 	setInterval(function() {
-		jQuery.post('/', {
+		jQuery.post('/tweetwall/', {
 			refresh: 1
 		}, refresh_tweets);
 	}, 2000);

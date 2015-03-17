@@ -10,7 +10,7 @@ $default-color:#292f33;
 @mixin clearfix() {
   &:before,
   &:after {
-    content: " "; 
+    content: " ";
     display: table;
   }
   &:after {
@@ -54,7 +54,7 @@ $default-color:#292f33;
   -ms-transition:$transition;
   transition:$transition;
   -webkit-backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);      
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 // CSS ANIMATION
@@ -64,7 +64,7 @@ $default-color:#292f33;
   -o-animation:$transition;
   -ms-animation:$transition;
   animation:$transition;
-  -webkit-transform: translateZ(0);    
+  -webkit-transform: translateZ(0);
 }
 
 // BOX SHADOW
@@ -77,7 +77,7 @@ $default-color:#292f33;
 // BORDER-RADIUS
 @mixin border-radius ($radius) {
   -moz-border-radius:$radius;
-  border-radius:$radius; 
+  border-radius:$radius;
 }
 
 // RETINA
@@ -111,7 +111,7 @@ $default-color:#292f33;
 // INLINE BLOCK LIST
 @mixin inline-block-list() {
   letter-spacing: -0.31em;
-  text-rendering: optimizespeed;  
+  text-rendering: optimizespeed;
 }
 
 // INLINE BLOCK ITEM

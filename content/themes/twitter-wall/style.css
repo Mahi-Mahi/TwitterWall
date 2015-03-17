@@ -1,153 +1,114 @@
 /* GLOBAL */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\000038}}
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
+  box-sizing: border-box; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000315}}
 *:before,
 *:after {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
+  box-sizing: border-box; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000321}}
 html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-}
+  -ms-text-size-adjust: 100%; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000322}}
 html, button, input, select, textarea {
   color: #292f33;
-  font-family: '"Helvetica Neue",Helvetica,Arial,sans-serif', sans-serif;
-}
+  font-family: '"Helvetica Neue",Helvetica,Arial,sans-serif', sans-serif; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000327}}
 body {
-  background: url('/content/themes/twitter-wall/images/bg-page.jpg') center top repeat;
+  background: url('/tweetwall/content/themes/twitter-wall/images/bg-page.jpg') center top repeat;
   margin: 0;
   padding: 0;
-  font-size: 14px;
-}
+  font-size: 14px; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000334}}
 .unstyled {
   list-style-type: none;
   margin: 0;
-  padding: 0;
-}
+  padding: 0; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000335}}
 .clearfix {
-  zoom: 1;
-}
+  zoom: 1; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000336}}
 .clearfix:before, .clearfix:after {
   content: "";
-  display: table;
-}
+  display: table; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000337}}
 .clearfix:after {
-  clear: both;
-}
+  clear: both; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000339}}
 a {
   color: #292f33;
-  text-decoration: none;
-}
+  text-decoration: none; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000341}}
 html, body, .wrapper {
-  min-height: 100%;
-}
+  min-height: 100%; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000345}}
 .header {
-  background: url('/content/themes/twitter-wall/images/banner.jpg') left top no-repeat;
+  background: url('/tweetwall/content/themes/twitter-wall/images/banner.jpg') left top no-repeat;
   background-size: contain;
   display: block;
   margin: 0 auto;
   padding: 0;
   width: 1080px;
-  height: 360px;
-}
+  height: 360px; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000355}}
 .container {
   display: block;
   margin: 0 auto;
   padding: 0;
-  width: 1080px;
-}
+  width: 1080px; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000362}}
 .main-work {
   display: table;
   margin: 0;
   padding: 50px 0 0 0;
-  width: 100%;
-}
+  width: 100%; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000369}}
 .main {
   background: rgba(255, 255, 255, 0.5);
   display: block;
-  width: 100%;
-}
+  width: 100%; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000375}}
 .sidebar, .content {
   display: table-cell;
   margin: 0;
   padding: 0;
-  vertical-align: top;
-}
+  vertical-align: top; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000382}}
 .sidebar {
   padding: 0 20px 0 20px;
-  width: 290px;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000385}}
-.sidebar img {
-  background: #fff;
-  display: block;
-  height: 200px;
-  margin: 0 5px -80px 0;
-  padding: 0;
-  position: relative;
-  top: -90px;
-  width: 200px;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\0000395}}
-.sidebar p {
-  display: block;
-  line-height: 20px;
-  margin: 0;
-  padding: 10px 0 0 0;
-}
+  width: 290px; }
+  .sidebar img {
+    background: #fff;
+    display: block;
+    height: 200px;
+    margin: 0 5px -80px 0;
+    padding: 0;
+    position: relative;
+    top: -90px;
+    width: 200px; }
+  .sidebar p {
+    display: block;
+    line-height: 20px;
+    margin: 0;
+    padding: 10px 0 0 0; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\00003103}}
 h1 {
   display: block;
   font: 700 22px/1 '"Helvetica Neue",Helvetica,Arial,sans-serif', sans-serif;
   margin: 0;
-  padding: 0;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/brett\/Workspace\/TwitterWall\/content\/themes\/twitter-wall\/scss\/_global\.scss}line{font-family:\00003108}}
-h1 span {
-  color: #8899a6;
-  display: block;
-  font-size: 14px;
-  font-weight: normal;
-  margin: 0;
-  padding: 0;
-}
+  padding: 0; }
+  h1 span {
+    color: #8899a6;
+    display: block;
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0; }
+
+.blockquote.twitter-tweet {
+  display: none; }
