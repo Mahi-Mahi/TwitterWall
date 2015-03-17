@@ -35,10 +35,10 @@ else:
 	                            Du 20 au 29 mars à La Friche La Belle de Mai.
 	                        </p>
 	                        <p>
-						     	 <i class="fa fa-link"></i> Marseille.
+						     	 <i class="fa fa-map-marker"></i> Marseille
 	                        </p>
 	                        <p>
-	                        	<i class="fa fa-map-marker"></i> <a href="http://www.wave-innovation.com/marseille/">http://www.wave-innovation.com/marseille/</a>
+	                        	<i class="fa fa-link"></i> <a href="http://www.wave-innovation.com/marseille/">www.wave-innovation.com/marseille</a>
 	                        </p>
 	                        </div>
 	                    </div><!-- .sidebar -->
