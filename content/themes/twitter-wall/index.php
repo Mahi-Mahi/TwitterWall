@@ -30,7 +30,13 @@ else:
 	                        </h1>
 	                        <p>
 	                            #WaveMarseille : Wave, quand l’ingéniosité collective change le monde. <br />
-	                            Du 20 au 29 mars à La Friche La Belle de Mai
+	                            Du 20 au 29 mars à La Friche La Belle de Mai.
+	                        </p>
+	                        <p>
+	                        	<span class="Icon Icon--geo Icon--medium"></span> Marseille.
+	                        </p>
+	                        <p>
+	                        	<span class="Icon Icon--url Icon--medium"></span> <a href="http://www.wave-innovation.com/marseille/">http://www.wave-innovation.com/marseille/</a>
 	                        </p>
 	                        </div>
 	                    </div><!-- .sidebar -->
