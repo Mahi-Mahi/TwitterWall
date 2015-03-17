@@ -6,11 +6,11 @@ images_dir = "images"
 http_generated_images_path = "images"
 http_images_path = "/tweetwall/content/themes/twitter-wall/images"
 asset_cache_buster :none
-sass_options = {:debug_info => true}
+sass_options = {:debug_info => false}
 
 environment = :production
 preferred_syntax = :scss
-output_style = :expanded
+output_style = :compressed
 
 require 'fileutils'
 on_stylesheet_saved do |file|

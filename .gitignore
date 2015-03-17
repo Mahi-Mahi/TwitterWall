@@ -5,3 +5,4 @@
 /content/upgrade/
 /content/uploads/
 .DS_Store
+*.scssc

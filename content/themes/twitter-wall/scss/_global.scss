@@ -31,6 +31,8 @@ body {
 	font-size:14px;
 }
 
+html, body { overflow: hidden; }
+
 .unstyled { list-style-type:none; margin:0; padding:0; }
 .clearfix { zoom:1; }
 .clearfix:before, .clearfix:after { content:""; display:table; }

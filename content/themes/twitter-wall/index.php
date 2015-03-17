@@ -1,3 +1,4 @@
+<!doctype html>
 <?php
 if ( !empty($_POST) ):
 	get_template_part('loop');
@@ -10,6 +11,7 @@ else:
 	        <title>Expo Wave</title>
 	        <meta name="description" content="Expo Wave -  #WaveMarseille : Wave, quand l’ingéniosité collective change le monde.">
 	        <meta name="viewport" content="width=device-width, initial-scale=1">
+	        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	        <link rel="stylesheet" href="/tweetwall/content/themes/twitter-wall/style.css">
 		</head>
 		<body>
@@ -33,10 +35,10 @@ else:
 	                            Du 20 au 29 mars à La Friche La Belle de Mai.
 	                        </p>
 	                        <p>
-	                        	<span class="Icon Icon--geo Icon--medium"></span> Marseille.
+						     	 <i class="fa fa-link"></i> Marseille.
 	                        </p>
 	                        <p>
-	                        	<span class="Icon Icon--url Icon--medium"></span> <a href="http://www.wave-innovation.com/marseille/">http://www.wave-innovation.com/marseille/</a>
+	                        	<i class="fa fa-map-marker"></i> <a href="http://www.wave-innovation.com/marseille/">http://www.wave-innovation.com/marseille/</a>
 	                        </p>
 	                        </div>
 	                    </div><!-- .sidebar -->
