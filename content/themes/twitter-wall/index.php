@@ -31,7 +31,7 @@ else:
 	                            </a>
 	                        </h1>
 	                        <p>
-	                            #WaveMarseille : Wave, quand l’ingéniosité collective change le monde. <br />
+	                            <span class="colored">#WaveMarseille</span> : Wave, quand l’ingéniosité collective change le monde. <br />
 	                            Du 20 au 29 mars à La Friche La Belle de Mai.
 	                        </p>
 	                        <p>
