@@ -8,8 +8,7 @@ else:
 		<head>
 	        <meta charset="utf-8">
 	        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	        <title>Expo Wave</title>
-	        <meta name="description" content="Expo Wave -  #WaveMarseille : Wave, quand l’ingéniosité collective change le monde.">
+	        <title><?php the_field('title', 'option') ?></title>
 	        <meta name="viewport" content="width=device-width, initial-scale=1">
 	        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	        <link rel="stylesheet" href="/tweetwall/content/themes/twitter-wall/style.css">
@@ -26,19 +25,18 @@ else:
 	                        <div class="sidebar__edito">
 	                        <h1>
 	                            <a href="#" target="_blank">
-	                                Expo Wave
-	                                <span>@expowave</span>
+	                                <?php the_field('title', 'option') ?>
+	                                <span><?php the_field('twitter_name', 'option') ?></span>
 	                            </a>
 	                        </h1>
 	                        <p>
-	                            <span class="colored">#WaveMarseille</span> : Wave, quand l’ingéniosité collective change le monde. <br />
-	                            Du 20 au 29 mars à La Friche La Belle de Mai.
+	                            <span class="colored"><?php the_field('hashtag', 'option') ?></span> : <?php print get_field('description', 'option') ?>
 	                        </p>
 	                        <p>
-						     	 <i class="fa fa-map-marker"></i> Marseille
+						     	 <i class="fa fa-map-marker"></i> <?php the_field('city', 'option') ?>
 	                        </p>
 	                        <p>
-	                        	<i class="fa fa-link"></i> <a href="http://www.wave-innovation.com/marseille/">www.wave-innovation.com/marseille</a>
+	                        	<i class="fa fa-link"></i> <a href="<?php the_field('link', 'option') ?>"><?php print preg_replace("#^http://(.*)/?$#", "\\1", get_field('link', 'option')) ?></a>
 	                        </p>
 	                        </div>
 	                    </div><!-- .sidebar -->
