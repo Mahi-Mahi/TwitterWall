@@ -1,9 +1,9 @@
-<!doctype html>
 <?php
 if ( !empty($_POST) ):
 	get_template_part('loop');
 else:
 	?>
+	<!doctype html>
 	<html>
 		<head>
 	        <meta charset="utf-8">
@@ -12,6 +12,7 @@ else:
 	        <meta name="viewport" content="width=device-width, initial-scale=1">
 	        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	        <link rel="stylesheet" href="/tweetwall/content/themes/twitter-wall/style.css">
+	        <meta http-equiv="refresh" content="30">
 		</head>
 		<body>
 	        <div class="wrapper">
@@ -30,7 +31,7 @@ else:
 	                            </a>
 	                        </h1>
 	                        <p>
-	                            <span class="colored"><?php the_field('hashtag', 'option') ?></span> : <?php print get_field('description', 'option') ?>
+	                            <span><?php the_field('hashtag', 'option') ?></span> : <?php print get_field('description', 'option') ?>
 	                        </p>
 	                        <p>
 						     	 <i class="fa fa-map-marker"></i> <?php the_field('city', 'option') ?>
